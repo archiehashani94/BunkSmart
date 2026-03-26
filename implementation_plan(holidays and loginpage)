@@ -1,0 +1,67 @@
+# Fix Login Bug + Add PDF Calendar Upload for Holidays
+
+## Problem 1: Login Not Recognizing Credentials
+The [signup](file:///c:/web%20development%20projects/BUNKSMART/src/context/AuthContext.js#19-24) function stores email/password as-is, while [login](file:///c:/web%20development%20projects/BUNKSMART/src/context/AuthContext.js#25-35) compares them with strict `===`. Any difference in case or accidental whitespace causes login failure. Fix: normalize email (lowercase + trim) on both signup and login, and trim password.
+
+## Problem 2: Manual Holiday Entry
+The onboarding step 3 requires adding each holiday date manually. Fix: add a PDF upload option that extracts dates from an uploaded academic calendar using `pdfjs-dist`.
+
+---
+
+## Proposed Changes
+
+### Auth Context
+
+#### [MODIFY] [AuthContext.js](file:///c:/web%20development%20projects/BUNKSMART/src/context/AuthContext.js)
+
+- In [signup](file:///c:/web%20development%20projects/BUNKSMART/src/context/AuthContext.js#19-24): normalize email with `.trim().toLowerCase()`, trim password
+- In [login](file:///c:/web%20development%20projects/BUNKSMART/src/context/AuthContext.js#25-35): normalize email with `.trim().toLowerCase()`, trim password before comparing
+- This ensures credentials always match regardless of case or trailing whitespace
+
+---
+
+### PDF Holiday Extraction Utility
+
+#### [NEW] [pdfHolidayExtractor.js](file:///c:/web%20development%20projects/BUNKSMART/src/utils/pdfHolidayExtractor.js)
+
+- Uses `pdfjs-dist` to parse uploaded PDF files client-side
+- Extracts text from all pages (focusing on bottom sections where holidays are listed)
+- Uses regex patterns to find dates in common formats (e.g., "15 August 2025", "Aug 15, 2025", "2025-08-15", "15/08/2025", "15-08-2025")
+- Returns array of date strings in YYYY-MM-DD format
+
+---
+
+### Onboarding Page
+
+#### [MODIFY] [page.js](file:///c:/web%20development%20projects/BUNKSMART/src/app/onboarding/page.js)
+
+- **Step 3 (Academic Calendar)**: Replace the manual date-picker holiday input with:
+  - A PDF upload button ("Upload Academic Calendar PDF")
+  - A processing/loading state while extracting
+  - Display extracted holidays as tags with remove-buttons for review
+  - Keep the manual "Add Holiday" date picker as a secondary option for fine-tuning
+- After PDF upload, show extracted holiday dates as editable chips
+
+---
+
+### Dependencies
+
+- Install `pdfjs-dist` npm package for client-side PDF text extraction
+
+---
+
+## Verification Plan
+
+### Browser Testing
+1. Start dev server (`npm run dev`)
+2. **Test login fix:**  
+   - Clear localStorage (DevTools → Application → Local Storage → clear `bunksmart_*` keys)
+   - Sign up with any email (e.g. `Test@Example.com `) with trailing space
+   - Complete onboarding (or just sign up and log out)
+   - Try logging in with `test@example.com` (lowercase, no trailing space) — should succeed
+3. **Test PDF upload:**
+   - During onboarding step 3, click "Upload Academic Calendar PDF"
+   - Upload a sample academic calendar PDF  
+   - Verify holiday dates appear as chips
+   - Verify individual holidays can be removed
+   - Verify manual add still works alongside PDF extraction

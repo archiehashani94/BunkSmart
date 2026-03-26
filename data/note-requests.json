@@ -1,0 +1,24 @@
+[
+  {
+    "id": "1773990606248",
+    "senderEmail": "new_sender@gmail.com",
+    "senderName": "New Sender",
+    "subjectName": "testSub",
+    "classmates": [
+      {
+        "name": "new_receiver@gmail.com",
+        "email": "new_receiver@gmail.com"
+      }
+    ],
+    "recipientEmails": [
+      "new_receiver@gmail.com"
+    ],
+    "message": "hi",
+    "method": "in-app",
+    "date": "2026-03-20T07:10:06.248Z",
+    "updatedAt": "2026-03-20T07:10:06.248Z",
+    "status": "sent",
+    "uploads": [],
+    "reactions": []
+  }
+]

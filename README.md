@@ -20,6 +20,17 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Notes upload (Firebase Storage)
+
+The in-app notes request feature can upload PDFs/images to Firebase Storage using server-side credentials.
+
+Before running `npm run dev`, set these environment variables:
+
+- `FIREBASE_PROJECT_ID`
+- `FIREBASE_CLIENT_EMAIL`
+- `FIREBASE_PRIVATE_KEY` (escape newlines as `\\n`)
+- `FIREBASE_STORAGE_BUCKET` (example: `your-project.appspot.com`)
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
